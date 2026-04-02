@@ -1,6 +1,6 @@
 using MarketingRESTAPI.Domain.Entities;
 using MarketingRESTAPI.Domain.Enums;
-using System.Reflection.Metadata.Ecma335;
+using MarketingRESTAPI.Shared.Helpers;
 
 namespace MarketingRESTAPI.Infraestructure.Data;
 
@@ -22,12 +22,12 @@ public static class DataMapper
                     ContactPerson = row["Contact_Person"]?.Trim() ?? string.Empty,
                     Email = row["Email"]?.Trim() ?? string.Empty,
                     SectorId = int.TryParse(row["Sector_ID"], out var sectorId) ? sectorId : 0,     // Sector ID == 0 => no sector found
-                    Budget = decimal.TryParse(row["Budget"], out var budget) ? budget : 0,
-                    IsActive = row["Is_Active"] == "true" || row["Is_Active"] == "1",
-                    PreferredLanguage = 0
+                    Budget = DataNormalizer.NormalizeBudget(row["Budget"]),
+                    IsActive = DataNormalizer.NormalizeIsActive(row["IsActive"]),
+                    PreferredLanguage = DataNormalizer.NormalizeLanguage(row["Lang_Code"])
                 };
 
-                if (!string.IsNullOrEmpty(lead.Email))
+                if (lead.Id != 0 && lead.SectorId != 0 && !string.IsNullOrEmpty(lead.Email))
                     leads.Add(lead);
             }
             catch (Exception ex)
