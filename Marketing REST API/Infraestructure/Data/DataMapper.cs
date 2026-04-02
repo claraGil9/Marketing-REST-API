@@ -9,7 +9,6 @@ public static class DataMapper
     public static List<Lead> MapLeads(List<Dictionary<string, string>> rows)
     {
         var leads = new List<Lead>();
-        var random = new Random();
 
         foreach (var row in rows)
         {
@@ -23,7 +22,7 @@ public static class DataMapper
                     Email = row["Email"]?.Trim() ?? string.Empty,
                     SectorId = int.TryParse(row["Sector_ID"], out var sectorId) ? sectorId : 0,     // Sector ID == 0 => no sector found
                     Budget = DataNormalizer.NormalizeBudget(row["Budget"]),
-                    IsActive = DataNormalizer.NormalizeIsActive(row["IsActive"]),
+                    IsActive = DataNormalizer.NormalizeIsActive(row["Is_Active"]),
                     PreferredLanguage = DataNormalizer.NormalizeLanguage(row["Lang_Code"])
                 };
 
@@ -32,6 +31,8 @@ public static class DataMapper
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Error mapping row: {ex.Message}");
+                continue;
             }
         }
         return leads;
@@ -44,26 +45,32 @@ public static class DataMapper
         {
             try
             {
+                var names = new Dictionary<Language, string>();
+                names[Language.ES] = row.GetValueOrDefault("Name_ES", "");
+                names[Language.EN] = row.GetValueOrDefault("Name_EN", "");
+                names[Language.AR] = row.GetValueOrDefault("Name_AR", "");
+
+                var offers = new Dictionary<Language, string>();
+                offers[Language.ES] = row.GetValueOrDefault("Offer_ES", "");
+                offers[Language.EN] = row.GetValueOrDefault("Offer_EN", "");
+                offers[Language.AR] = row.GetValueOrDefault("Offer_AR", "");
+
                 var sector = new Sector
                 {
                     Id = int.TryParse(row["Sector_ID"], out var id) ? id : 0,
-                    Names = new Dictionary<Language, string>
-                    {
-                        { Language.ES, row.GetValueOrDefault("Name_ES", "") },
-                        { Language.ES, row.GetValueOrDefault("Name_EN", "") },
-                        { Language.ES, row.GetValueOrDefault("Name_AR", "") }
-                    },
-                    Offers = new Dictionary<Language, string>
-                    {
-                        { Language.ES, row.GetValueOrDefault("Offer_ES", "") },
-                        { Language.ES, row.GetValueOrDefault("Offer_EN", "") },
-                        { Language.ES, row.GetValueOrDefault("Offer_AR", "") }
-                    }
+                    Names = names,
+                    Offers = offers
+
                 };
                 sectors.Add(sector);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error mapping row: {ex.Message}");
+                continue;
+            }
         }
+        Console.WriteLine(sectors);
         return sectors;
     }
 }

@@ -1,5 +1,6 @@
 using ClosedXML.Excel;
 using MarketingRESTAPI.Application.Interfaces;
+using MarketingRESTAPI.Domain.Entities;
 
 namespace MarketingRESTAPI.Infraestructure.FileReaders;
 
@@ -8,24 +9,35 @@ public class ExcelReader : IExcelReader
     public List<Dictionary<string, string>> Read(string filePath)
     {
         var excelList = new List<Dictionary<string, string>>();
-
-        using var workbook = new XLWorkbook(filePath);
-        foreach (var worksheet in workbook.Worksheets)
+        try
         {
-            var rows = worksheet.RowsUsed().ToList();
-            var headers = rows.First().Cells().Select(c => c.GetString()).ToList();
-            //var rows_1 = worksheet.RangeUsed().RowsUsed().ToList();
+            using var workbook = new XLWorkbook(filePath);
+            if (workbook == null)
+                throw new FileNotFoundException("Excel file not found");
 
-            foreach (var row in rows.Skip(1))
+            foreach (var worksheet in workbook.Worksheets)
             {
-                var rowValues = new Dictionary<string, string>();
-                for (int i = 1; i <= headers.Count; i++)
+                var rows = worksheet.RowsUsed().ToList();
+                var headers = rows.First()
+                                  .Cells()
+                                  .Select(c => c.GetString().Trim())
+                                  .ToList();
+
+                foreach (var row in rows.Skip(1))
                 {
-                    var value = row.Cell(i).GetString();
-                    rowValues[headers[i - 1]] = value;
+                    var rowValues = new Dictionary<string, string>();
+                    for (int i = 0; i < headers.Count; i++)
+                    {
+                        var value = row.Cell(i + 1).GetString();
+                        rowValues[headers[i]] = value;
+                    }
+                    excelList.Add(rowValues);
                 }
-                excelList.Add(rowValues);
             }
+        }
+        catch (Exception ex) 
+        {
+            Console.WriteLine(ex.Message);
         }
         return excelList;
     }

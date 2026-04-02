@@ -11,7 +11,7 @@ public class LeadRepository : ILeadRepository
 
     public LeadRepository(IExcelReader reader)
     {
-        var rows = reader.Read("Data/leads (2).xlsx");
+        var rows = reader.Read("Infraestructure/Data/Files/leads (2).xlsx");
         _leads = DataMapper.MapLeads(rows);
     }
 

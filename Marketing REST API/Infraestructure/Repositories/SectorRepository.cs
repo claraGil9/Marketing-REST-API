@@ -11,7 +11,7 @@ public class SectorRepository : ISectorRepository
 
     public SectorRepository(IExcelReader reader)
     {
-        var rows = reader.Read("Data/sectors (2).xlsx");
+        var rows = reader.Read("Infraestructure/Data/Files/sectors (2).xlsx");
         _sectors = DataMapper.MapSectors(rows);
     }
 
