@@ -1,4 +1,4 @@
-using MarketingCampaignAPI.Application.Services;
+using MarketingRESTAPI.Application.Services;
 using MarketingRESTAPI.Application.Interfaces;
 using MarketingRESTAPI.Infraestructure.FileReaders;
 using MarketingRESTAPI.Infraestructure.Generators;

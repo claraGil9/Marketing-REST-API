@@ -1,8 +1,9 @@
 using MarketingRESTAPI.Application.DTOs;
 using MarketingRESTAPI.Application.Interfaces;
 using MarketingRESTAPI.Domain.Entities;
+using MarketingRESTAPI.Shared.Constants;
 
-namespace MarketingCampaignAPI.Application.Services;
+namespace MarketingRESTAPI.Application.Services;
 
 public class MailingService : IMailingService
 {
@@ -39,7 +40,7 @@ public class MailingService : IMailingService
             var email = new EmailDto
             {
                 To = lead.Email,
-                Subject = $"Proposal for {lead.CompanyName}",
+                Subject = $"{Translations.GetEmailSubject(lead.PreferredLanguage, lead.CompanyName)}",
                 Body = body
             };
             emails.Add(email);

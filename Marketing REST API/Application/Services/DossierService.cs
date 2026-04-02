@@ -1,7 +1,7 @@
 using MarketingRESTAPI.Application.Interfaces;
 using MarketingRESTAPI.Domain.Entities;
 
-namespace MarketingCampaignAPI.Application.Services;
+namespace MarketingRESTAPI.Application.Services;
 
 public class DossierService : IDossierService
 {

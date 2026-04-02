@@ -1,6 +1,7 @@
 using MarketingRESTAPI.Application.Interfaces;
 using MarketingRESTAPI.Domain.Entities;
 using MarketingRESTAPI.Domain.Enums;
+using MarketingRESTAPI.Shared.Constants;
 
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
@@ -16,13 +17,7 @@ public class PdfGenerator : IPdfGenerator
         var sectorName = sector.Names.GetValueOrDefault(language, "");
         var offer = sector.Offers.GetValueOrDefault(language, "");
 
-        var greeting = language switch
-        {
-            Language.ES => "Propuesta Comercial",
-            Language.EN => "Business Proposal",
-            Language.AR => "عرض تجاري",
-            _ => "Business Proposal"
-        };
+        var greeting = Translations.GetGreeting(language);
 
         var document = Document.Create(container =>
         {
@@ -31,16 +26,18 @@ public class PdfGenerator : IPdfGenerator
                 page.Margin(30);
                 page.Content().Column(col =>
                 {
-                    // Front page
-                    col.Item().Text(greeting).FontSize(24).Bold();
-                    col.Item().Text(lead.CompanyName).FontSize(18);
-                    col.Item().Text(DateTime.UtcNow.ToString("yyyy-MM-dd"));
+                    // Header
+                    col.Item().Text(greeting).FontSize(26).Bold().FontColor(Colors.Blue.Darken2);
+                    col.Item().Text(lead.CompanyName).FontSize(18).SemiBold();
+                    col.Item().Text(DateTime.UtcNow.ToString("yyyy-MM-dd")).FontSize(10).FontColor(Colors.Grey.Medium);
 
                     col.Item().PaddingVertical(10).LineHorizontal(1);
 
                     // 🔹 SECTOR
-                    col.Item().Text($"Sector: {sectorName}").Bold();
-                    col.Item().Text(offer);
+                    col.Item().Text($"{Translations.GetSectorLabel(language)}: {sectorName}").FontSize(16).Bold();
+                    col.Item().Text(offer).FontSize(12);
+
+                    col.Item().PaddingVertical(10).LineHorizontal(1);
 
                     // Contact info
                     col.Item().Table(table =>
@@ -51,13 +48,13 @@ public class PdfGenerator : IPdfGenerator
                             columns.RelativeColumn();
                         });
 
-                        table.Cell().Text("Contact");
+                        table.Cell().Text(Translations.GetContactLabel(language));
                         table.Cell().Text(lead.ContactPerson);
 
-                        table.Cell().Text("Email");
+                        table.Cell().Text(Translations.GetEmailtLabel(language));
                         table.Cell().Text(lead.Email);
 
-                        table.Cell().Text("Budget");
+                        table.Cell().Text(Translations.GetBudgetLabel(language));
                         table.Cell().Text(lead.Budget.ToString("C"));
                     });
                 });

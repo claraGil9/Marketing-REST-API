@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MarketingRESTAPI.Application.Interfaces;
 
-namespace MarketingCampaignAPI.Controllers;
+namespace MarketingRESTAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
