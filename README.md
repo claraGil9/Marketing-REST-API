@@ -1,8 +1,6 @@
 # Marketing REST API
 
 ___
-___
-___
 
 ## Overview
 
@@ -76,7 +74,7 @@ The system includes a normalization layer to handle inconsistent Excel data:
 1. Clone the repository
 2. Open in Visual Studio
 3. Run the project
-4. Access Swagger: https://localhost:{port}/swagger
+4. Access Swagger (it should open automatically): https://localhost:{port}/swagger
 
 Use Swagger to test endpoints.
 
