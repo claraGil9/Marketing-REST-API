@@ -1,5 +1,7 @@
+using MarketingCampaignAPI.Application.Services;
 using MarketingRESTAPI.Application.Interfaces;
 using MarketingRESTAPI.Infraestructure.FileReaders;
+using MarketingRESTAPI.Infraestructure.Generators;
 using MarketingRESTAPI.Infraestructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +17,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IExcelReader, ExcelReader>();
 builder.Services.AddSingleton<ILeadRepository, LeadRepository>();
 builder.Services.AddSingleton<ISectorRepository, SectorRepository>();
+builder.Services.AddScoped<IMailingService, MailingService>();
+builder.Services.AddScoped<IEmailTemplateGenerator, EmailTemplateGenerator>();
 
 var app = builder.Build();
 
